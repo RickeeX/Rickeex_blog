@@ -58,3 +58,129 @@ input:-webkit-autofill:focus {
   display: inline-block;
   vertical-align: middle;
 }
+
+:root {
+  --grid-line-color: rgba(128, 140, 157, 0.507);
+}
+
+.dark {
+  --grid-line-color: rgba(106, 132, 173, 0.286);
+}
+
+/* Grid Background Animations */
+@keyframes grid-line-vertical {
+  0% {
+    height: 0%;
+    opacity: 0;
+  }
+  60% {
+    opacity: 0.8;
+  }
+  100% {
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes grid-line-horizontal {
+  0% {
+    width: 0%;
+    opacity: 0;
+  }
+  60% {
+    opacity: 0.8;
+  }
+  100% {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+.grid-line {
+  background-color: transparent;
+}
+
+.grid-line-vertical {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 5px,
+    var(--grid-line-color) 5px,
+    var(--grid-line-color) 6px
+  );
+  filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.08));
+}
+
+.grid-line-horizontal {
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0px,
+    transparent 5px,
+    var(--grid-line-color) 5px,
+    var(--grid-line-color) 6px
+  );
+  filter: drop-shadow(0 0 4px rgba(99, 101, 241, 0.49));
+}
+
+.post-divider {
+  position: relative;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(148, 163, 184, 0.25) 30%,
+    rgba(148, 163, 184, 0.25) 70%,
+    transparent 100%
+  );
+  overflow: visible;
+  transform-origin: left center;
+  animation: divider-line-grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.dark .post-divider {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(75, 85, 99, 0.4) 30%,
+    rgba(75, 85, 99, 0.4) 70%,
+    transparent 100%
+  );
+}
+
+.post-divider::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 80px;
+  height: 5px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.55) 0%, transparent 60%);
+  animation: divider-glow 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes divider-line-grow {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes divider-glow {
+  0% {
+    transform: translateX(-10%);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(calc(100% - 20px));
+    opacity: 0;
+  }
+}

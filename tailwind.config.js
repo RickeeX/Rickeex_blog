@@ -15,6 +15,28 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      keyframes: {
+        'grid-line-vertical': {
+          '0%': { height: '0%', opacity: '0' },
+          '50%': { opacity: '1' },
+          '100%': { height: '100%', opacity: '1' },
+        },
+        'grid-line-horizontal': {
+          '0%': { width: '0%', opacity: '0' },
+          '50%': { opacity: '1' },
+          '100%': { width: '100%', opacity: '1' },
+        },
+        'grid-glow': {
+          '0%, 100%': { opacity: '0.3' },
+          '50%': { opacity: '0.5' },
+        },
+      },
+      // 2. 注册 animation
+      animation: {
+        'grid-line-vertical': 'grid-line-vertical 1.2s ease-out forwards',
+        'grid-line-horizontal': 'grid-line-horizontal 1.2s ease-out forwards',
+        'grid-glow': 'grid-glow 3s ease-in-out infinite',
+      },
       lineHeight: {
         11: '2.75rem',
         12: '3rem',
