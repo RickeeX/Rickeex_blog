@@ -13,7 +13,7 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950 py-4">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white py-4 dark:border-gray-800 dark:bg-gray-950">
       {/* 修改点说明：
          1. 宽度控制：将 max-w-3xl 改为 w-full max-w-screen-2xl。
             这允许它在 iPad Pro 上尽可能展宽，直到极大的屏幕才限制宽度。

@@ -14,25 +14,25 @@ const SearchButton = () => {
       <SearchButtonWrapper aria-label="Search">
         {/* --- 手机端视图：只显示放大镜图标 --- */}
         <div className="md:hidden">
-            <svg
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
             className="h-6 w-6 text-gray-900 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
-            >
+          >
             <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
             />
-            </svg>
+          </svg>
         </div>
 
         {/* --- 桌面端视图：显示 Node.js 风格长条框 --- */}
         {/* 注意这里的 'hidden md:flex'，表示默认隐藏，屏幕变大后才显示 */}
-        <div className="hidden md:flex group h-9 w-full min-w-[200px] cursor-text items-center overflow-hidden rounded-md border border-gray-200 bg-gray-100 px-3 text-sm text-gray-500 ring-offset-2 hover:border-gray-300 hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:border-gray-700 dark:hover:bg-gray-800 md:w-64">
+        <div className="group hidden h-9 w-full min-w-[200px] cursor-text items-center overflow-hidden rounded-md border border-gray-200 bg-gray-100 px-3 text-sm text-gray-500 ring-offset-2 hover:border-gray-300 hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:border-gray-700 dark:hover:bg-gray-800 md:flex md:w-64">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
