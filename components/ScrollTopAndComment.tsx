@@ -7,12 +7,20 @@ const ScrollTopAndComment = () => {
   const [show, setShow] = useState(false)
 
   useEffect(() => {
+    let ticking = false
+
     const handleWindowScroll = () => {
-      if (window.scrollY > 50) setShow(true)
-      else setShow(false)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY > 50) setShow(true)
+          else setShow(false)
+          ticking = false
+        })
+        ticking = true
+      }
     }
 
-    window.addEventListener('scroll', handleWindowScroll)
+    window.addEventListener('scroll', handleWindowScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleWindowScroll)
   }, [])
 
