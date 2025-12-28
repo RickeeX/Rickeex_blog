@@ -1,14 +1,10 @@
 import 'css/tailwind.css'
-import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 
 import { Space_Grotesk } from 'next/font/google'
-// Supports weights 100-900
 import '@fontsource-variable/noto-sans-hk'
 import '@fontsource-variable/noto-sans-sc'
 import '@fontsource-variable/hanken-grotesk'
-import { Analytics, AnalyticsConfig } from 'pliny/analytics'
-import { SearchProvider, SearchConfig } from 'pliny/search'
 import Header from '@/components/Header'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
@@ -16,6 +12,8 @@ import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import GridBackground from '@/components/GridBackground'
+import SearchProvider from '@/components/SearchProvider'
+import Analytics from '@/components/Analytics'
 
 const space_grotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -100,11 +98,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
       <body className="bg-white text-black antialiased dark:bg-gray-950 dark:text-white">
-        {/* 2. 使用新组件替换原来的背景 div */}
         <GridBackground />
         <ThemeProviders>
-          <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
-          <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
+          <Analytics />
+          <SearchProvider>
             <Header />
             <SectionContainer>
               <main className="mb-auto">{children}</main>

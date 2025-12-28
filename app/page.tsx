@@ -1,10 +1,9 @@
-import { sortPosts, allCoreContent } from 'pliny/utils/contentlayer'
-import { allBlogs } from 'contentlayer/generated'
+import { sortPosts, allCoreContent } from '@/lib/content'
+import { blogs } from '#site/content'
 import Main from './Main'
-//import '@fontsource-variable/noto-sans-hk'
 
 export default async function Page() {
-  const sortedPosts = sortPosts(allBlogs)
+  const sortedPosts = sortPosts(blogs)
   const posts = allCoreContent(sortedPosts)
   return <Main posts={posts} />
 }

@@ -2,11 +2,10 @@ import 'css/prism.css'
 import 'katex/dist/katex.css'
 
 import PageTitle from '@/components/PageTitle'
-import { components } from '@/components/MDXComponents'
-import { MDXLayoutRenderer } from 'pliny/mdx-components'
-import { sortPosts, coreContent, allCoreContent } from 'pliny/utils/contentlayer'
-import { allBlogs, allAuthors } from 'contentlayer/generated'
-import type { Authors, Blog } from 'contentlayer/generated'
+import { MDXLayoutRenderer } from '@/lib/mdx'
+import { sortPosts, coreContent, allCoreContent, CoreContent } from '@/lib/content'
+import type { Blog, Authors } from '@/lib/content'
+import { blogs, authors } from '#site/content'
 import PostSimple from '@/layouts/PostSimple'
 import PostLayout from '@/layouts/PostLayout'
 import PostBanner from '@/layouts/PostBanner'
@@ -26,19 +25,22 @@ export async function generateMetadata(props: {
 }): Promise<Metadata | undefined> {
   const params = await props.params
   const slug = decodeURI(params.slug.join('/'))
-  const post = allBlogs.find((p) => p.slug === slug)
+  const post = blogs.find((p) => p.slug === slug)
   const authorList = post?.authors || ['default']
-  const authorDetails = authorList.map((author) => {
-    const authorResults = allAuthors.find((p) => p.slug === author)
-    return coreContent(authorResults as Authors)
-  })
+  const authorDetails = authorList
+    .map((author) => {
+      const authorResults = authors.find((p) => p.slug === author)
+      return authorResults ? coreContent(authorResults) : null
+    })
+    .filter(Boolean)
+
   if (!post) {
     return
   }
 
   const publishedAt = new Date(post.date).toISOString()
   const modifiedAt = new Date(post.lastmod || post.date).toISOString()
-  const authors = authorDetails.map((author) => author.name)
+  const authorNames = authorDetails.map((author) => author?.name).filter(Boolean)
   let imageList = [siteMetadata.socialBanner]
   if (post.images) {
     imageList = typeof post.images === 'string' ? [post.images] : post.images
@@ -51,10 +53,10 @@ export async function generateMetadata(props: {
 
   return {
     title: post.title,
-    description: post.summary,
+    description: post.summary || undefined,
     openGraph: {
       title: post.title,
-      description: post.summary,
+      description: post.summary || undefined,
       siteName: siteMetadata.title,
       locale: 'en_US',
       type: 'article',
@@ -62,26 +64,26 @@ export async function generateMetadata(props: {
       modifiedTime: modifiedAt,
       url: './',
       images: ogImages,
-      authors: authors.length > 0 ? authors : [siteMetadata.author],
+      authors: authorNames.length > 0 ? authorNames : [siteMetadata.author],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
-      description: post.summary,
+      description: post.summary || undefined,
       images: imageList,
     },
   }
 }
 
 export const generateStaticParams = async () => {
-  return allBlogs.map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }))
+  return blogs.map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }))
 }
 
 export default async function Page(props: { params: Promise<{ slug: string[] }> }) {
   const params = await props.params
   const slug = decodeURI(params.slug.join('/'))
   // Filter out drafts in production
-  const sortedCoreContents = allCoreContent(sortPosts(allBlogs))
+  const sortedCoreContents = allCoreContent(sortPosts(blogs))
   const postIndex = sortedCoreContents.findIndex((p) => p.slug === slug)
   if (postIndex === -1) {
     return notFound()
@@ -89,12 +91,19 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
 
   const prev = sortedCoreContents[postIndex + 1]
   const next = sortedCoreContents[postIndex - 1]
-  const post = allBlogs.find((p) => p.slug === slug) as Blog
+  const post = blogs.find((p) => p.slug === slug)
+  if (!post) {
+    return notFound()
+  }
+
   const authorList = post?.authors || ['default']
-  const authorDetails = authorList.map((author) => {
-    const authorResults = allAuthors.find((p) => p.slug === author)
-    return coreContent(authorResults as Authors)
-  })
+  const authorDetails = authorList
+    .map((author) => {
+      const authorResults = authors.find((p) => p.slug === author)
+      return authorResults ? coreContent(authorResults) : null
+    })
+    .filter(Boolean) as CoreContent<Authors>[]
+
   const mainContent = coreContent(post)
   const jsonLd = post.structuredData
   jsonLd['author'] = authorDetails.map((author) => {
@@ -113,7 +122,7 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
-        <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
+        <MDXLayoutRenderer code={post.content} />
       </Layout>
     </>
   )

@@ -1,13 +1,28 @@
 import { writeFileSync, mkdirSync } from 'fs'
 import path from 'path'
 import { slug } from 'github-slugger'
-import { escape } from 'pliny/utils/htmlEscaper.js'
 import siteMetadata from '../data/siteMetadata.js'
 import tagData from '../app/tag-data.json' with { type: 'json' }
-import { allBlogs } from '../.contentlayer/generated/index.mjs'
-import { sortPosts } from 'pliny/utils/contentlayer.js'
 
 const outputFolder = process.env.EXPORT ? 'out' : 'public'
+
+// HTML escape function
+function escape(str) {
+  if (!str) return ''
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+// Sort posts by date
+function sortPosts(posts) {
+  return posts
+    .filter((post) => !post.draft)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}
 
 const generateRssItem = (config, post) => `
   <item>
@@ -56,8 +71,16 @@ async function generateRSS(config, allBlogs, page = 'feed.xml') {
   }
 }
 
-const rss = () => {
-  generateRSS(siteMetadata, allBlogs)
-  console.log('RSS feed generated...')
+const rss = async () => {
+  try {
+    // 动态导入 velite 生成的数据
+    const { default: blogs } = await import('../.velite/blogs.json', { with: { type: 'json' } })
+    generateRSS(siteMetadata, blogs)
+    console.log('RSS feed generated...')
+  } catch (error) {
+    console.error('Failed to generate RSS:', error.message)
+    console.log('Make sure to run "velite" first to generate content.')
+  }
 }
+
 export default rss
