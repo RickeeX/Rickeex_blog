@@ -11,15 +11,12 @@ images: []
 
 ## 密碼學的產生
 
-<div className="flex flex-col items-center [&_p]:!my-0 -mt-5">
-    <div>
-        ![crypto intro 01](/static/images/crypto/crypto-intro-01.svg)
-    </div>
-    {/* <span className="text-sm text-gray-600 dark:text-gray-400">
+<div className="-mt-5 flex flex-col items-center [&_p]:!my-0">
+  <div>![crypto intro 01](/static/images/crypto/crypto-intro-01.svg)</div>
+  {/* <span className="text-sm text-gray-600 dark:text-gray-400">
         
     </span> */}
 </div>
-
 
 ## 密碼學的五個基本要素
 
@@ -37,88 +34,85 @@ images: []
 
 1. 1949 年以前：古典密碼學階段。加密算法不公開、密鑰不公開。主要依賴於加密算法的保密性，而非密鑰的保密性。
 
-2. 1949 年，香農（Shannon）發表論文《保密係統的通信理論》（*Communication Theory of Secrecy Systems*），將信息理論引入密碼學中。
+2. 1949 年，香農（Shannon）發表論文《保密係統的通信理論》（_Communication Theory of Secrecy Systems_），將信息理論引入密碼學中。
 
-3. 1976 年，迪菲和赫爾曼（Diffie & Hellman）發表了一篇名為《密碼學的新方向》（*New Direction in Cryptography*）的文章。他們在這篇文章里提出了現代密碼學公鑰系統的概念，簡稱為 PKC。核心理論：不僅加密算法可以公開，加密的密鑰也可以公開。
+3. 1976 年，迪菲和赫爾曼（Diffie & Hellman）發表了一篇名為《密碼學的新方向》（_New Direction in Cryptography_）的文章。他們在這篇文章里提出了現代密碼學公鑰系統的概念，簡稱為 PKC。核心理論：不僅加密算法可以公開，加密的密鑰也可以公開。
 
 ## 古典密碼
 
 1. 移位密碼（又稱凱撒密碼）：密鑰 $k$ 代表移位的數量。在 26 字母表中：
-    $$
-    \begin{aligned}
-    c &= E_k(p) = p + k\mod 26, \\
-    p &= D_k(c) = c - k\mod 26.
-    \end{aligned}
-    $$
-    因為密鑰的數量有限（密鑰空間 $K$ 極小），所以確定該種加密算法后，很容易暴力破解。
 
-    移位密碼的變種形式：使用不同的字符—數字映射，例如 ACSII 編碼等。
-    
-    ```python
-    c = "afZ_r9VYfScOeO_UL^RWUc"
-    p = "flag{"
-    # 已知：明文開頭是 flag{...
+   $$
+   \begin{aligned}
+   c &= E_k(p) = p + k\mod 26, \\
+   p &= D_k(c) = c - k\mod 26.
+   \end{aligned}
+   $$
 
-    # 輸出密文的 ASCII 值
-    for i in s:
-        a = ord(i)
-        print(a, end=" ")
-    print("")
-    # 輸出明文的 ASCII 值
-    for i in p:
-        a = ord(i)
-        print(a, end=" ")
-    print("")
+   因為密鑰的數量有限（密鑰空間 $K$ 極小），所以確定該種加密算法后，很容易暴力破解。
 
-    # Output:
-    # 97 102 90 95 114 57 86 89 102 83 99 79 101 79 95 85 76 94 82 87 85 99 
-    # 102 108 97 103 123
-    # 發現規律：第 n 位上，明文與密文的 ASCII 值相差 (4+n)
+   移位密碼的變種形式：使用不同的字符—數字映射，例如 ACSII 編碼等。
 
-    # 輸出明文：
-    plaintext = ""
-    j = 5
-    for i in s:
-        plaintext += chr(ord(i) + j)
-        j = j + 1
-    print(plaintext)
+   ```python
+   c = "afZ_r9VYfScOeO_UL^RWUc"
+   p = "flag{"
+   # 已知：明文開頭是 flag{...
 
-    # Output:
-    # flag{Caesar_variation}
-    ```
+   # 輸出密文的 ASCII 值
+   for i in s:
+       a = ord(i)
+       print(a, end=" ")
+   print("")
+   # 輸出明文的 ASCII 值
+   for i in p:
+       a = ord(i)
+       print(a, end=" ")
+   print("")
+
+   # Output:
+   # 97 102 90 95 114 57 86 89 102 83 99 79 101 79 95 85 76 94 82 87 85 99
+   # 102 108 97 103 123
+   # 發現規律：第 n 位上，明文與密文的 ASCII 值相差 (4+n)
+
+   # 輸出明文：
+   plaintext = ""
+   j = 5
+   for i in s:
+       plaintext += chr(ord(i) + j)
+       j = j + 1
+   print(plaintext)
+
+   # Output:
+   # flag{Caesar_variation}
+   ```
 
 2. 單表替換密碼：$\mathbb{ALPHABET}\rightarrow \mathbb{ALPHABET}$ 的任意同構（一對一）映射，加密算法和解密算法互為對方的逆映射。每個字母被轉換成任意字母。若只考慮 26 個大寫字母，那麼密鑰空間可達到 $A_{26}^{26}=26!$ 種。
 
-    密鑰空間大就一定安全嗎？並非如此。對應語言中各個字母出現的頻率是符合一定統計學規律的，而這種規律在單表替換密碼編碼之後得到保留。只要確定明文所用的語言，就可以根據字幕出現的頻率來破解密文（然而不一定成功）。
+   密鑰空間大就一定安全嗎？並非如此。對應語言中各個字母出現的頻率是符合一定統計學規律的，而這種規律在單表替換密碼編碼之後得到保留。只要確定明文所用的語言，就可以根據字幕出現的頻率來破解密文（然而不一定成功）。
 
-    <div className="flex flex-col items-center [&_p]:!my-0 -mt-5">
-    <div>
-        ![letter frequency table](/static/images/crypto/crypto-intro-02.png)
-    </div>
-    <span className="-mt-4 text-sm text-gray-600 dark:text-gray-400">
-        Letter Frequency Table
-    </span>
-    </div>
+   <div className="-mt-5 flex flex-col items-center [&_p]:!my-0">
+     <div>![letter frequency table](/static/images/crypto/crypto-intro-02.png)</div>
+     <span className="-mt-4 text-sm text-gray-600 dark:text-gray-400">Letter Frequency Table</span>
+   </div>
 
 3. 多表替換密碼。設密鑰為長度為 m 的矢量，則：
-    $$
-    \begin{aligned}
-        k&=(k_1,\cdots,k_m)\\
-        c&=(c_1,\cdots,c_n)=E_k(p)=E_k(p_1,\cdots,p_n)=(p_1+k_1,\cdots,p_n+k_{n\ \mathrm{mod}\ m})\\
-        p&=(p_1,\cdots,p_n)=D_k(c)=D_k(c_1,\cdots,c_n)=(c_1-k_1,\cdots,c_n-k_{n\ \mathrm{mod}\ m})
-    \end{aligned}
-    $$
 
-    也就是說，對明文的每一位採取不同的編碼位移方法。凱撒密碼可以認為是多表替換密碼的特殊形式：凱撒密碼中 $k=3$ 等價於多表替換密碼中 $k=(3,3,\cdots,3)$。
+   $$
+   \begin{aligned}
+       k&=(k_1,\cdots,k_m)\\
+       c&=(c_1,\cdots,c_n)=E_k(p)=E_k(p_1,\cdots,p_n)=(p_1+k_1,\cdots,p_n+k_{n\ \mathrm{mod}\ m})\\
+       p&=(p_1,\cdots,p_n)=D_k(c)=D_k(c_1,\cdots,c_n)=(c_1-k_1,\cdots,c_n-k_{n\ \mathrm{mod}\ m})
+   \end{aligned}
+   $$
 
-    <div className="flex flex-col items-center [&_p]:!my-0 -mt-5">
-    <div>
-        ![Vigenère Cypher](/static/images/crypto/crypto-intro-03.jpg)
-    </div>
-    <span className="-mt-4 text-sm text-gray-600 dark:text-gray-400">
-        Vigenère Cypher：明文 + 密鑰 = 密文。
-    </span>
-    </div>
+   也就是說，對明文的每一位採取不同的編碼位移方法。凱撒密碼可以認為是多表替換密碼的特殊形式：凱撒密碼中 $k=3$ 等價於多表替換密碼中 $k=(3,3,\cdots,3)$。
+
+   <div className="-mt-5 flex flex-col items-center [&_p]:!my-0">
+     <div>![Vigenère Cypher](/static/images/crypto/crypto-intro-03.jpg)</div>
+     <span className="-mt-4 text-sm text-gray-600 dark:text-gray-400">
+       Vigenère Cypher：明文 + 密鑰 = 密文。
+     </span>
+   </div>
 
 ## 現代密碼學
 
@@ -134,58 +128,54 @@ images: []
 
 3. 歐拉函數 $\varphi(n)$ 定義為：小於或等於 $n$ 的正整數中與 $n$ 互質的數的數目。易知對於質數 $q$，$\varphi(q)=q-1$。對於兩個質數之積 $n=q_1q_2$，有：
 
-    $$
-    \begin{aligned}
-    \varphi(n)=(q_1-1)(q_2-1).
-    \end{aligned}
-    $$
+   $$
+   \begin{aligned}
+   \varphi(n)=(q_1-1)(q_2-1).
+   \end{aligned}
+   $$
 
-4. 隨機選取小於或等於 $\varphi(n)$ 的正整數 $e$ 作為公鑰。根據貝祖定理，一定存在整數 $s,t$ 使得 $se+t\varphi(n)=1$（$s$ 和 $t$ 可以用擴展歐幾裡得算法算出），即一定存在 $d$ 使得 
+4. 隨機選取小於或等於 $\varphi(n)$ 的正整數 $e$ 作為公鑰。根據貝祖定理，一定存在整數 $s,t$ 使得 $se+t\varphi(n)=1$（$s$ 和 $t$ 可以用擴展歐幾裡得算法算出），即一定存在 $d$ 使得
 
-    $$
-    \begin{aligned}
-    d\times e\equiv 1\ (\mathrm{mod}\ \varphi(n))
-    \end{aligned}
-    $$
-    
-    即
-    
-    $$
-    \begin{aligned}
-    d\times e = k\varphi(n)+1,\ k\in\mathbb{Z}，
-    \end{aligned}
-    $$
+   $$
+   \begin{aligned}
+   d\times e\equiv 1\ (\mathrm{mod}\ \varphi(n))
+   \end{aligned}
+   $$
 
-    將此 $d$ 作為私鑰。
+   即
+
+   $$
+   \begin{aligned}
+   d\times e = k\varphi(n)+1,\ k\in\mathbb{Z},
+   \end{aligned}
+   $$
+
+   將此 $d$ 作為私鑰。
 
 5. 加密算法：任意選取 $c$ 使得 $c\equiv p^e\ (\mathrm{mod}\ n)$。
 
 6. 解密算法：$p\equiv c^d\ (\mathrm{mod}\ n)$
 
-    證明：根據同餘的性質，在 $\mathrm{mod}\ n$ 下，
+   證明：根據同餘的性質，在 $\mathrm{mod}\ n$ 下，
 
-    $$
-    \begin{aligned}
-    c\equiv p^e\ \Rightarrow\ c^d\equiv p^{de}\equiv p^{k\varphi(n)+1}.
-    \end{aligned}
-    $$
+   $$
+   \begin{aligned}
+   c\equiv p^e\ \Rightarrow\ c^d\equiv p^{de}\equiv p^{k\varphi(n)+1}.
+   \end{aligned}
+   $$
 
-    只需證明 $p\equiv p^{k\varphi(n)+1}$。
+   只需證明 $p\equiv p^{k\varphi(n)+1}$。
 
-    若 $p,n$ 互質，則根據歐拉定理，$p^{\varphi(n)}\equiv 1$，直接得證。
+   若 $p,n$ 互質，則根據歐拉定理，$p^{\varphi(n)}\equiv 1$，直接得證。
 
-    若 $p,n$ 不互質，由於 $n$ 只有兩個因數 $q_1, q_2$，$p$ 必然為其中一個數的倍數，同時與另一個數互質。設 $p=tq_1\ (1\leq t\lt n)$ 且 $p$ 與 $q_2$ 互質。則根據歐拉定理：
+   若 $p,n$ 不互質，由於 $n$ 只有兩個因數 $q_1, q_2$，$p$ 必然為其中一個數的倍數，同時與另一個數互質。設 $p=tq_1\ (1\leq t\lt n)$ 且 $p$ 與 $q_2$ 互質。則根據歐拉定理：
 
-    $$
-    \begin{aligned}
-    &p^{\varphi(q_2)}\equiv 1\ (\mathrm{mod}\ q_2)\\
-    \Rightarrow\ &p^{k\varphi(q_1)\varphi(q_2)}\equiv 1\ (\mathrm{mod}\ q_2)\\
-    \Rightarrow\ &p^{k\varphi(n)}\equiv 1\ (\mathrm{mod}\ q_2)\\
-    \Rightarrow\ &p^{k\varphi(n)}=1+uq_2\\
-    \Rightarrow\ &p^{k\varphi(n)+1}=p+puq_2=p+(tq_1)uq_2\equiv p\ (\mathrm{mod}\ n).
-    \end{aligned}
-    $$
-
-
-
-    
+   $$
+   \begin{aligned}
+   &p^{\varphi(q_2)}\equiv 1\ (\mathrm{mod}\ q_2)\\
+   \Rightarrow\ &p^{k\varphi(q_1)\varphi(q_2)}\equiv 1\ (\mathrm{mod}\ q_2)\\
+   \Rightarrow\ &p^{k\varphi(n)}\equiv 1\ (\mathrm{mod}\ q_2)\\
+   \Rightarrow\ &p^{k\varphi(n)}=1+uq_2\\
+   \Rightarrow\ &p^{k\varphi(n)+1}=p+puq_2=p+(tq_1)uq_2\equiv p\ (\mathrm{mod}\ n).
+   \end{aligned}
+   $$
