@@ -12,6 +12,7 @@ import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import GridBackground from '@/components/GridBackground'
+import GridBackgroundMinimal from '@/components/GridBackgroundMinimal'
 import SearchProvider from '@/components/SearchProvider'
 import Analytics from '@/components/Analytics'
 
@@ -98,7 +99,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
       <body className="bg-white text-black antialiased dark:bg-gray-950 dark:text-white">
-        <GridBackground />
+        {siteMetadata.gridBackground === 'animated' && <GridBackground />}
+        {siteMetadata.gridBackground === 'minimal' && <GridBackgroundMinimal />}
         <ThemeProviders>
           <Analytics />
           <SearchProvider>

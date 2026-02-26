@@ -2,7 +2,6 @@ import { writeFileSync, mkdirSync } from 'fs'
 import path from 'path'
 import { slug } from 'github-slugger'
 import siteMetadata from '../data/siteMetadata.js'
-import tagData from '../app/tag-data.json' with { type: 'json' }
 
 const outputFolder = process.env.EXPORT ? 'out' : 'public'
 
@@ -54,6 +53,18 @@ const generateRss = (config, posts, page = 'feed.xml') => `
 
 async function generateRSS(config, allBlogs, page = 'feed.xml') {
   const publishPosts = allBlogs.filter((post) => post.draft !== true)
+
+  // Calculate tag counts dynamically
+  const tagCounts = {}
+  publishPosts.forEach((post) => {
+    if (post.tags) {
+      post.tags.forEach((tag) => {
+        const formattedTag = slug(tag)
+        tagCounts[formattedTag] = (tagCounts[formattedTag] || 0) + 1
+      })
+    }
+  })
+
   // RSS for blog post
   if (publishPosts.length > 0) {
     const rss = generateRss(config, sortPosts(publishPosts))
@@ -61,8 +72,8 @@ async function generateRSS(config, allBlogs, page = 'feed.xml') {
   }
 
   if (publishPosts.length > 0) {
-    for (const tag of Object.keys(tagData)) {
-      const filteredPosts = allBlogs.filter((post) => post.tags.map((t) => slug(t)).includes(tag))
+    for (const tag of Object.keys(tagCounts)) {
+      const filteredPosts = allBlogs.filter((post) => post.tags && post.tags.map((t) => slug(t)).includes(tag))
       const rss = generateRss(config, filteredPosts, `tags/${tag}/${page}`)
       const rssPath = path.join(outputFolder, 'tags', tag)
       mkdirSync(rssPath, { recursive: true })

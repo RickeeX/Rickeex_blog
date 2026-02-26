@@ -12,6 +12,9 @@ const Image = ({
   quality = 85,
   placeholder,
   blurDataURL,
+  width,
+  height,
+  style,
   ...rest
 }: ImageProps) => {
   // 处理 basePath
@@ -21,6 +24,9 @@ const Image = ({
   const finalPlaceholder = placeholder ?? 'blur'
   const finalBlurDataURL = blurDataURL ?? DEFAULT_BLUR_DATA_URL
 
+  // 如果没有提供 width 和 height，使用 fill 模式（自动适配尺寸）
+  const useFill = width === undefined && height === undefined
+
   return (
     <NextImage
       src={imageSrc}
@@ -28,6 +34,10 @@ const Image = ({
       quality={quality}
       placeholder={finalPlaceholder}
       blurDataURL={finalPlaceholder === 'blur' ? finalBlurDataURL : undefined}
+      fill={useFill}
+      style={useFill ? { objectFit: 'cover', ...style } : style}
+      width={useFill ? undefined : width}
+      height={useFill ? undefined : height}
       {...rest}
     />
   )

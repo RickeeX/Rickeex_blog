@@ -73,7 +73,18 @@ export default function SearchProvider({ children }: SearchProviderProps) {
         const searchDocumentsPath =
           siteMetadata.search?.kbarConfig?.searchDocumentsPath || '/search.json'
         const res = await fetch(searchDocumentsPath)
+
+        if (!res.ok) {
+          // 文件不存在或服务器错误，静默跳过
+          return
+        }
+
         const data = await res.json()
+
+        if (!Array.isArray(data) || data.length === 0) {
+          // 空数据，静默跳过
+          return
+        }
 
         const actions: Action[] = data.map((post: Record<string, string>) => ({
           id: post.path,
@@ -86,7 +97,7 @@ export default function SearchProvider({ children }: SearchProviderProps) {
 
         setSearchActions(actions)
       } catch (error) {
-        console.error('Failed to load search data:', error)
+        // 静默处理所有错误（网络、解析等）
       }
     }
 

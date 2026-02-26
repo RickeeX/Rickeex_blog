@@ -2,7 +2,7 @@ import { slug } from 'github-slugger'
 import siteMetadata from '@/data/siteMetadata'
 import ListLayout from '@/layouts/ListLayoutWithTags'
 import { blogs } from '#site/content'
-import tagData from 'app/tag-data.json'
+import { createTagCount } from '@/lib/content'
 import { genPageMetadata } from 'app/seo'
 import { Metadata } from 'next'
 import { allCoreContent, sortPosts } from '@/lib/content'
@@ -25,7 +25,7 @@ export async function generateMetadata(props: {
 }
 
 export const generateStaticParams = async () => {
-  const tagCounts = tagData as Record<string, number>
+  const tagCounts = createTagCount(blogs)
   const tagKeys = Object.keys(tagCounts)
   const paths = tagKeys.map((tag) => ({
     tag: encodeURI(tag),
@@ -41,5 +41,6 @@ export default async function TagPage(props: { params: Promise<{ tag: string }> 
   const filteredPosts = allCoreContent(
     sortPosts(blogs.filter((post) => post.tags && post.tags.map((t) => slug(t)).includes(tag)))
   )
-  return <ListLayout posts={filteredPosts} title={title} />
+  const allTags = createTagCount(blogs)
+  return <ListLayout posts={filteredPosts} title={title} allTags={allTags} />
 }

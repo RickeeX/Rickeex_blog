@@ -6,6 +6,7 @@ const siteMetadata = {
   description: 'Per Aspera Ad Astra. 循此苦旅，以達天際。',
   language: 'en-us',
   theme: 'system', // system, dark or light
+  gridBackground: 'minimal', // 'animated' | 'minimal' | 'none'
   siteUrl: 'https://rickeex.com',
   siteRepo: 'https://github.com/RickeeX/Rickeex_blog',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,

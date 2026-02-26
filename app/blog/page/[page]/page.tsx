@@ -1,5 +1,5 @@
 import ListLayout from '@/layouts/ListLayoutWithTags'
-import { allCoreContent, sortPosts } from '@/lib/content'
+import { allCoreContent, sortPosts, createTagCount } from '@/lib/content'
 import { blogs } from '#site/content'
 
 const POSTS_PER_PAGE = 10
@@ -13,6 +13,7 @@ export const generateStaticParams = async () => {
 export default async function Page(props: { params: Promise<{ page: string }> }) {
   const params = await props.params
   const posts = allCoreContent(sortPosts(blogs))
+  const allTags = createTagCount(blogs)
   const pageNumber = parseInt(params.page as string)
   const initialDisplayPosts = posts.slice(
     POSTS_PER_PAGE * (pageNumber - 1),
@@ -29,6 +30,7 @@ export default async function Page(props: { params: Promise<{ page: string }> })
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
       title="All Posts"
+      allTags={allTags}
     />
   )
 }
