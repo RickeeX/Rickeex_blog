@@ -7,9 +7,11 @@ export default function NewsletterForm({ title = 'Subscribe to the newsletter' }
   const [error, setError] = useState(false)
   const [message, setMessage] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const subscribe = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (loading) return
 
     const email = inputEl.current?.value
     if (!email) {
@@ -18,16 +20,22 @@ export default function NewsletterForm({ title = 'Subscribe to the newsletter' }
       return
     }
 
+    setLoading(true)
+    setError(false)
+
     const res = await fetch('/api/newsletter', {
       body: JSON.stringify({ email }),
       headers: { 'Content-Type': 'application/json' },
       method: 'POST',
     })
 
-    const { error: apiError } = await res.json()
+    const { error: apiError, message: apiMessage } = await res.json()
+
+    setLoading(false)
+
     if (apiError) {
       setError(true)
-      setMessage('Your e-mail address is invalid or you are already subscribed!')
+      setMessage(apiMessage || 'Subscription failed. Please try again.')
       return
     }
 
@@ -36,7 +44,7 @@ export default function NewsletterForm({ title = 'Subscribe to the newsletter' }
     }
     setError(false)
     setSubscribed(true)
-    setMessage('Successfully! 🎉 You are now subscribed.')
+    setMessage('Successfully! You are now subscribed.')
   }
 
   return (
@@ -52,26 +60,36 @@ export default function NewsletterForm({ title = 'Subscribe to the newsletter' }
             className="w-72 rounded-md px-4 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-600 dark:bg-black"
             id="email-input"
             name="email"
-            placeholder={subscribed ? "You're subscribed !  🎉" : 'Enter your email'}
+            placeholder={subscribed ? "You're subscribed!" : 'Enter your email'}
             ref={inputEl}
             required
             type="email"
             disabled={subscribed}
+            onChange={() => {
+              setError(false)
+              setMessage('')
+            }}
           />
         </div>
         <div className="mt-2 flex w-full rounded-md shadow-sm sm:ml-3 sm:mt-0">
           <button
             className={`w-full rounded-md bg-primary-500 px-4 py-2 font-medium text-white sm:py-0 ${
-              subscribed ? 'cursor-default' : 'hover:bg-primary-700 dark:hover:bg-primary-400'
-            } focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 dark:ring-offset-black`}
+              subscribed || loading
+                ? 'cursor-default'
+                : 'hover:bg-primary-700 dark:hover:bg-primary-400'
+            } focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 disabled:opacity-50 dark:ring-offset-black`}
             type="submit"
-            disabled={subscribed}
+            disabled={subscribed || loading}
           >
-            {subscribed ? 'Thank you!' : 'Sign up'}
+            {loading ? 'Subscribing...' : subscribed ? 'Thank you!' : 'Sign up'}
           </button>
         </div>
       </form>
-      {error && <div className="w-72 pt-2 text-sm text-red-500 dark:text-red-400">{message}</div>}
+      {error && (
+        <div className="w-72 rounded-md bg-red-50 p-2 text-sm text-red-600 dark:bg-red-900/30 dark:text-red-400">
+          {message}
+        </div>
+      )}
     </div>
   )
 }

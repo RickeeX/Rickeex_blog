@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Remove automatic quotation marks from blockquotes */
+blockquote {
+  quotes: none !important;
+  font-family: Georgia, 'Noto Serif HK Variable', 'Noto Serif SC Variable', serif !important;
+  font-style: normal !important;
+  font-size: 0.92em;
+}
+
+blockquote::before,
+blockquote::after {
+  content: none !important;
+}
+
 .task-list-item::before {
   @apply hidden;
 }
