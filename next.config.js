@@ -76,6 +76,7 @@ module.exports = () => {
       unoptimized,
       dangerouslyAllowSVG: true,
       contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+      qualities: [75, 85],
     },
     async headers() {
       return [

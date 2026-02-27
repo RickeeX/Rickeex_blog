@@ -45,7 +45,7 @@ input:-webkit-autofill:focus {
 
 .content-header-link {
   opacity: 0;
-  margin-left: -24px;
+  margin-left: -31px;
   padding-right: 4px;
 }
 
@@ -153,7 +153,12 @@ input:-webkit-autofill:focus {
   width: 12px;
   height: 12px;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(255, 210, 120, 1) 0%, rgba(255, 149, 87, 0.75) 40%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 210, 120, 1) 0%,
+    rgba(255, 149, 87, 0.75) 40%,
+    transparent 70%
+  );
   box-shadow:
     0 0 6px rgba(255, 210, 120, 0.9),
     0 0 16px rgba(255, 149, 87, 0.6),
@@ -183,6 +188,16 @@ input:-webkit-autofill:focus {
 .post-divider-right::after {
   right: 0;
   animation: divider-glow-right 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.prose {
+  text-spacing: trim-start allow-end;
+  font-variant-east-asian: proportional-widths;
+  chws-style: 'chws';
+  font-feature-settings:
+    'chws' 1,
+    'kern' 1;
+  text-autospace: ideograph-alpha;
 }
 
 @keyframes divider-draw {
