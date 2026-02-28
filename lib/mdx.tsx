@@ -79,8 +79,11 @@ function Pre({ children, className, ...props }: PreProps) {
   const getCodeText = (node: React.ReactNode): string => {
     if (typeof node === 'string') return node
     if (Array.isArray(node)) return node.map(getCodeText).join('')
-    if (React.isValidElement(node) && node.props?.children) {
-      return getCodeText(node.props.children)
+    if (React.isValidElement(node)) {
+      const element = node as React.ReactElement<{ children?: React.ReactNode }>
+      if (element.props?.children) {
+        return getCodeText(element.props.children)
+      }
     }
     return ''
   }
