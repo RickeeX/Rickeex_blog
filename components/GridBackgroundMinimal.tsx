@@ -4,6 +4,17 @@ import { useEffect, useState, useMemo } from 'react'
 
 const GRID_SPACING = 24 // 网格间距 (px)
 
+// 氛围光晕参数
+const GLOW_CONFIG = {
+  // 尺寸 (px)
+  desktopSize: 900,
+  mobileSize: 500,
+  // 位置 (百分比) - 光晕中心在页面的位置
+  centerPosition: '35%',
+  // 夜间模式: 紫红色 (rgba 最后一位是 opacity)
+  darkColor: 'rgba(192, 38, 211, 0.35)',
+}
+
 const GridBackgroundMinimal = () => {
   const [mounted, setMounted] = useState(false)
   const [viewport, setViewport] = useState({ width: 0, height: 0 })
@@ -49,7 +60,7 @@ const GridBackgroundMinimal = () => {
   }, [viewport.height])
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[-1] select-none overflow-hidden bg-white transition-colors duration-500 dark:bg-gray-950">
+    <div className="pointer-events-none fixed inset-0 z-[-1] select-none overflow-hidden bg-[#fdfbf7] transition-colors duration-500 dark:bg-gray-950">
       {/* 竖线 - 静态显示 */}
       {verticalLines.map((pos) => (
         <div
@@ -72,19 +83,25 @@ const GridBackgroundMinimal = () => {
         />
       ))}
 
-      {/* 氛围光晕 */}
+      {/* 氛围光晕 - 夜间模式 */}
       <div
-        className="absolute left-0 right-0 top-[10%] m-auto h-[600px] w-[600px] rounded-full opacity-20 dark:opacity-20 sm:w-[600px]"
+        className="absolute left-0 right-0 m-auto hidden -translate-y-1/2 rounded-full opacity-20 dark:block"
         style={{
-          background: 'radial-gradient(circle, rgba(129, 140, 248, 0.4) 0%, transparent 70%)',
+          top: GLOW_CONFIG.centerPosition,
+          width: GLOW_CONFIG.mobileSize,
+          height: GLOW_CONFIG.mobileSize,
+          background: `radial-gradient(circle, ${GLOW_CONFIG.darkColor} 0%, transparent 70%)`,
         }}
       >
-        <div
-          className="hidden h-full w-full dark:block"
-          style={{
-            background: 'radial-gradient(circle, rgba(192, 38, 211, 0.3) 0%, transparent 70%)',
-          }}
-        />
+        {/* 桌面端更大尺寸 */}
+        <style jsx>{`
+          @media (min-width: 640px) {
+            div {
+              width: ${GLOW_CONFIG.desktopSize}px !important;
+              height: ${GLOW_CONFIG.desktopSize}px !important;
+            }
+          }
+        `}</style>
       </div>
     </div>
   )

@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Inline code - remove backticks */
+:not(pre) > code::before,
+:not(pre) > code::after {
+  content: '' !important;
+}
+
+/* Inline code colors - pink for both modes */
+:root:not(.dark) :not(pre) > code {
+  color: #db2777; /* primary-600 */
+}
+
+.dark :not(pre) > code {
+  color: #f472b6; /* primary-400 */
+}
+
 /* Remove automatic quotation marks from blockquotes */
 blockquote {
   quotes: none !important;

@@ -45,11 +45,13 @@ module.exports = {
       },
       fontFamily: {
         //sans: ['var(--font-space-grotesk)', ...fontFamily.sans],
-        sans: ['Hanken Grotesk Variable',
+        sans: [
+          'Hanken Grotesk Variable',
           'Noto Sans HK Variable',
           'Noto Sans SC Variable',
           //'var(--font-space-grotesk)',
-          ...fontFamily.sans],
+          ...fontFamily.sans,
+        ],
       },
       colors: {
         primary: colors.pink,
@@ -76,9 +78,6 @@ module.exports = {
             },
             h3: {
               fontWeight: '600',
-            },
-            code: {
-              color: theme('colors.indigo.500'),
             },
           },
         },
