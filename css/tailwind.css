@@ -11,10 +11,12 @@
 /* Inline code colors - pink for both modes */
 :root:not(.dark) :not(pre) > code {
   color: #db2777; /* primary-600 */
+  vertical-align: 3%;
 }
 
 .dark :not(pre) > code {
   color: #f472b6; /* primary-400 */
+  vertical-align: 3%;
 }
 
 /* Remove automatic quotation marks from blockquotes */
