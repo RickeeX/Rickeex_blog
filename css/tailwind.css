@@ -84,6 +84,10 @@ input:-webkit-autofill:focus {
   opacity: 1;
 }
 
+.content-header {
+  scroll-margin-top: var(--heading-scroll-offset, 100px);
+}
+
 .linkicon {
   display: inline-block;
   vertical-align: middle;

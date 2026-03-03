@@ -72,6 +72,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang={siteMetadata.language}
       className={`${space_grotesk.variable} scroll-smooth`}
       suppressHydrationWarning
+      style={
+        {
+          '--heading-scroll-offset': siteMetadata.headingScrollOffset || '2rem',
+        } as React.CSSProperties
+      }
     >
       <link
         rel="apple-touch-icon"

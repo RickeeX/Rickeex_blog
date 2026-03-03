@@ -99,6 +99,7 @@ const siteMetadata = {
     //   indexName: 'docsearch',
     // },
   },
+  headingScrollOffset: '100px', // Supports px (e.g., '100px') or % (e.g., '15%')
 }
 
 module.exports = siteMetadata
