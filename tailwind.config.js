@@ -79,6 +79,15 @@ module.exports = {
             h3: {
               fontWeight: '600',
             },
+            // 修复标题与正文左侧不对齐
+            'h1,h2,h3,h4,h5,h6': {
+              paddingLeft: 0,
+              marginLeft: 0,
+            },
+            // 正文和h4对齐
+            p: {
+              marginLeft: 0,
+            },
           },
         },
         invert: {
@@ -92,6 +101,11 @@ module.exports = {
             },
             'h1,h2,h3,h4,h5,h6': {
               color: theme('colors.gray.100'),
+              paddingLeft: 0,
+              marginLeft: 0,
+            },
+            p: {
+              marginLeft: 0,
             },
           },
         },

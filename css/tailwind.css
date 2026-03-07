@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 修复正文和h4对齐 */
+.prose h4,
+.prose p {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+.dark .prose h4,
+.dark .prose p {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
 /* Inline code - remove backticks */
 :not(pre) > code::before,
 :not(pre) > code::after {
@@ -11,12 +24,12 @@
 /* Inline code colors - pink for both modes */
 :root:not(.dark) :not(pre) > code {
   color: #db2777; /* primary-600 */
-  vertical-align: 3%;
+  vertical-align: 5.5%;
 }
 
 .dark :not(pre) > code {
   color: #f472b6; /* primary-400 */
-  vertical-align: 3%;
+  vertical-align: 5.5%;
 }
 
 /* Remove automatic quotation marks from blockquotes */
@@ -75,8 +88,8 @@ input:-webkit-autofill:focus {
 
 .content-header-link {
   opacity: 0;
-  margin-left: -31px;
-  padding-right: 4px;
+  margin-left: -34px;
+  padding-right: 9px;
 }
 
 .content-header:hover .content-header-link,
@@ -297,6 +310,19 @@ input:-webkit-autofill:focus {
     height: 100%;
     opacity: 1;
   }
+}
+
+/* 图片背景处理：白底黑字图在暗色模式下自动处理 */
+.img-invert {
+  /* 白天模式：白色背景与页面融合（变透明效果） */
+  mix-blend-mode: multiply;
+}
+
+.dark .img-invert {
+  /* 暗色模式：反相颜色，黑变白，白变黑 */
+  filter: invert(1);
+  /* 再用 screen 让现在白色部分（原本黑色）与暗色背景融合 */
+  mix-blend-mode: screen;
 }
 
 /* 光束扫描动画 */
