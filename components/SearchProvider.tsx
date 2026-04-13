@@ -8,6 +8,7 @@ import {
   KBarSearch,
   KBarResults,
   useMatches,
+  useRegisterActions,
   Action,
 } from 'kbar'
 import { useRouter } from 'next/navigation'
@@ -62,49 +63,8 @@ function RenderResults() {
   )
 }
 
-export default function SearchProvider({ children }: SearchProviderProps) {
-  const router = useRouter()
-  const [searchActions, setSearchActions] = useState<Action[]>([])
-
-  // 加载搜索数据
-  useEffect(() => {
-    const loadSearchData = async () => {
-      try {
-        const searchDocumentsPath =
-          siteMetadata.search?.kbarConfig?.searchDocumentsPath || '/search.json'
-        const res = await fetch(searchDocumentsPath)
-
-        if (!res.ok) {
-          // 文件不存在或服务器错误，静默跳过
-          return
-        }
-
-        const data = await res.json()
-
-        if (!Array.isArray(data) || data.length === 0) {
-          // 空数据，静默跳过
-          return
-        }
-
-        const actions: Action[] = data.map((post: Record<string, string>) => ({
-          id: post.path,
-          name: post.title,
-          keywords: post.summary || '',
-          section: 'Blog',
-          subtitle: post.summary,
-          perform: () => router.push('/' + post.path),
-        }))
-
-        setSearchActions(actions)
-      } catch (error) {
-        // 静默处理所有错误（网络、解析等）
-      }
-    }
-
-    loadSearchData()
-  }, [router])
-
-  const actions = useMemo(
+function StaticNavigation({ router }: { router: ReturnType<typeof useRouter> }) {
+  const staticActions = useMemo<Action[]>(
     () => [
       {
         id: 'home',
@@ -142,19 +102,75 @@ export default function SearchProvider({ children }: SearchProviderProps) {
         perform: () => router.push('/about'),
         icon: '👤',
       },
-      ...searchActions,
     ],
-    [router, searchActions]
+    [router]
   )
 
+  useRegisterActions(staticActions, [router])
+
+  return null
+}
+
+function BlogSearchActions({
+  router,
+  onLoaded,
+}: {
+  router: ReturnType<typeof useRouter>
+  onLoaded: (count: number) => void
+}) {
+  const [blogActions, setBlogActions] = useState<Action[]>([])
+
+  useEffect(() => {
+    const loadSearchData = async () => {
+      try {
+        const searchDocumentsPath =
+          siteMetadata.search?.kbarConfig?.searchDocumentsPath || '/search.json'
+        const res = await fetch(searchDocumentsPath)
+
+        if (!res.ok) return
+
+        const data = await res.json()
+
+        if (!Array.isArray(data) || data.length === 0) return
+
+        const actions: Action[] = data.map((post: Record<string, string>) => ({
+          id: post.path,
+          name: post.title,
+          keywords: `${post.title} ${post.summary || ''} ${Array.isArray(post.tags) ? post.tags.join(' ') : ''} ${post.slug || ''}`,
+          section: 'Blog',
+          subtitle: post.summary,
+          perform: () => router.push('/' + post.path),
+        }))
+
+        setBlogActions(actions)
+        onLoaded(actions.length)
+      } catch (error) {
+        console.error('Search load error:', error)
+      }
+    }
+
+    loadSearchData()
+  }, [router, onLoaded])
+
+  useRegisterActions(blogActions, [blogActions])
+
+  return null
+}
+
+export default function SearchProvider({ children }: SearchProviderProps) {
+  const router = useRouter()
+  const [loadedCount, setLoadedCount] = useState(0)
+
   return (
-    <KBarProvider actions={actions}>
+    <KBarProvider>
+      <StaticNavigation router={router} />
+      <BlogSearchActions router={router} onLoaded={setLoadedCount} />
       <KBarPortal>
         <KBarPositioner className="z-50 bg-gray-900/80 backdrop-blur-sm">
           <KBarAnimator className="w-full max-w-xl overflow-hidden rounded-lg border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-900">
             <KBarSearch
               className="w-full border-b border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-              placeholder="Search..."
+              placeholder={loadedCount > 0 ? `Search ${loadedCount} posts...` : 'Search...'}
             />
             <RenderResults />
           </KBarAnimator>
