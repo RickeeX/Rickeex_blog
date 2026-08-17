@@ -1,8 +1,7 @@
-'use client' // 👈 这一行非常重要，必须在第一行
+'use client'
 
-import { useEffect, useRef } from 'react' // 👈 报错就是因为漏了这句
+import { useEffect, useRef } from 'react'
 
-// 定义组件参数的类型 (TypeScript 规范)
 interface DatawrapperProps {
   src: string
   title?: string
@@ -16,23 +15,16 @@ export default function Datawrapper({
   height = 500,
   className = '',
 }: DatawrapperProps) {
-  // 给 ref 加上具体的 HTML 类型
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      if (typeof event.data['datawrapper-height'] !== 'undefined') {
-        const iframes = document.querySelectorAll('iframe')
-        for (const key in event.data['datawrapper-height']) {
-          for (let i = 0; i < iframes.length; i++) {
-            // 安全检查：确保 iframeRef.current 存在
-            if (iframes[i].contentWindow === event.source) {
-              const newHeight = event.data['datawrapper-height'][key] + 'px'
-              iframes[i].style.height = newHeight
-            }
-          }
-        }
-      }
+      const frame = iframeRef.current
+      if (!frame || event.source !== frame.contentWindow) return
+      const heights = event.data?.['datawrapper-height']
+      if (!heights || typeof heights !== 'object') return
+      const nextHeight = Object.values(heights).find((value) => typeof value === 'number')
+      if (typeof nextHeight === 'number') frame.style.height = `${nextHeight}px`
     }
 
     window.addEventListener('message', handleMessage)

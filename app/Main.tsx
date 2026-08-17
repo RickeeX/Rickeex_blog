@@ -2,11 +2,11 @@ import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import { formatDate } from '@/lib/content'
-import NewsletterForm from '@/components/NewsletterForm'
+import type { Blog, CoreContent } from '@/lib/content'
 
 const MAX_DISPLAY = 5
 
-export default function Home({ posts }) {
+export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
   return (
     <>
       <div className="space-y-6">
@@ -86,11 +86,6 @@ export default function Home({ posts }) {
           >
             All Posts &rarr;
           </Link>
-        </div>
-      )}
-      {siteMetadata.newsletter?.provider && (
-        <div className="flex items-center justify-center pt-4">
-          <NewsletterForm />
         </div>
       )}
     </>

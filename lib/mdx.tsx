@@ -1,19 +1,17 @@
-'use client'
-
-import * as React from 'react'
-import * as _jsx_runtime from 'react/jsx-runtime'
+/* eslint-disable react-hooks/static-components -- compiled MDX components are evaluated on the server */
+import * as jsxRuntime from 'react/jsx-runtime'
+import type { ComponentType } from 'react'
+import type { MDXComponents } from 'mdx/types'
+import CodeBlock from '@/components/CodeBlock'
+import DataWrapper from '@/components/DataWrapper'
 import Image from '@/components/Image'
 import CustomLink from '@/components/Link'
 import TableWrapper from '@/components/TableWrapper'
-import DataWrapper from '@/components/DataWrapper'
-import NewsletterForm from '@/components/NewsletterForm'
 
-// 客户端组件的 MDX 渲染器
 interface MDXLayoutRendererProps {
   code: string
 }
 
-// TOC 内联组件
 interface TOCInlineProps {
   toc: { value: string; url: string; depth: number }[]
   indentDepth?: number
@@ -23,7 +21,7 @@ interface TOCInlineProps {
   exclude?: string | string[]
 }
 
-function TOCInline({
+export function TOCInline({
   toc,
   indentDepth = 3,
   fromHeading = 1,
@@ -31,145 +29,52 @@ function TOCInline({
   asDisclosure = false,
   exclude = '',
 }: TOCInlineProps) {
-  const re = Array.isArray(exclude)
-    ? new RegExp('^(' + exclude.join('|') + ')$', 'i')
-    : new RegExp('^(' + exclude + ')$', 'i')
-
+  const expression = Array.isArray(exclude) ? exclude.join('|') : exclude
+  const excludedHeading = expression ? new RegExp(`^(${expression})$`, 'i') : null
   const filteredToc = toc.filter(
     (heading) =>
-      heading.depth >= fromHeading && heading.depth <= toHeading && !re.test(heading.value)
+      heading.depth >= fromHeading &&
+      heading.depth <= toHeading &&
+      !excludedHeading?.test(heading.value)
   )
 
-  const tocList = (
+  const list = (
     <ul className="ml-0 list-none">
       {filteredToc.map((heading) => (
-        <li key={heading.value} className={`${heading.depth >= indentDepth && 'ml-6'}`}>
+        <li key={heading.url} className={heading.depth >= indentDepth ? 'ml-6' : undefined}>
           <a href={heading.url}>{heading.value}</a>
         </li>
       ))}
     </ul>
   )
 
-  return (
-    <>
-      {asDisclosure ? (
-        <details open>
-          <summary className="ml-6 pb-2 pt-2 text-xl font-bold">Table of Contents</summary>
-          <div className="ml-6">{tocList}</div>
-        </details>
-      ) : (
-        tocList
-      )}
-    </>
+  return asDisclosure ? (
+    <details open>
+      <summary className="ml-6 pb-2 pt-2 text-xl font-bold">Table of Contents</summary>
+      <div className="ml-6">{list}</div>
+    </details>
+  ) : (
+    list
   )
 }
 
-// 代码块组件
-interface PreProps {
-  children: React.ReactNode
-  className?: string
-}
-
-function Pre({ children, className, ...props }: PreProps) {
-  // 从 className 提取语言
-  const languageMatch = className?.match(/language-(\w+)/)
-  const language = languageMatch ? languageMatch[1] : ''
-
-  // 提取代码文本
-  const getCodeText = (node: React.ReactNode): string => {
-    if (typeof node === 'string') return node
-    if (Array.isArray(node)) return node.map(getCodeText).join('')
-    if (React.isValidElement(node)) {
-      const element = node as React.ReactElement<{ children?: React.ReactNode }>
-      if (element.props?.children) {
-        return getCodeText(element.props.children)
-      }
-    }
-    return ''
-  }
-
-  const codeText = getCodeText(children)
-
-  const [copied, setCopied] = React.useState(false)
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(codeText)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error('Failed to copy:', err)
-    }
-  }
-
-  return (
-    <div className="code-block-wrapper">
-      {language && (
-        <div className="code-header">
-          <span className="language-tag">{language}</span>
-          <button className="copy-button" onClick={handleCopy} aria-label="Copy code">
-            {copied ? (
-              <>
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span>Copied!</span>
-              </>
-            ) : (
-              <>
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-                <span>Copy</span>
-              </>
-            )}
-          </button>
-        </div>
-      )}
-      <pre className={className} {...props}>
-        {children}
-      </pre>
-    </div>
-  )
-}
-
-// 内置的 MDX 组件
-const mdxComponents = {
+const mdxComponents: MDXComponents = {
   Image,
+  img: Image,
   TOCInline,
   a: CustomLink,
-  pre: Pre,
+  pre: CodeBlock,
   table: TableWrapper,
-  BlogNewsletterForm: NewsletterForm,
   DataWrapper,
 }
 
-export function MDXLayoutRenderer({ code }: MDXLayoutRendererProps) {
-  const Component = React.useMemo(() => {
-    if (!code || code.trim() === '') {
-      return () => null
-    }
-    try {
-      const fn = new Function('_jsx_runtime', code)
-      const result = fn(_jsx_runtime)
-      return result?.default || (() => null)
-    } catch (error) {
-      console.error('Error parsing MDX:', error)
-      return () => null
-    }
-  }, [code])
-
-  return <Component components={mdxComponents} />
+function getMDXComponent(code: string): ComponentType<{ components: MDXComponents }> {
+  const evaluate = new Function('_jsx_runtime', code)
+  return evaluate(jsxRuntime).default
 }
 
-export { TOCInline, Pre }
+export function MDXLayoutRenderer({ code }: MDXLayoutRendererProps) {
+  if (!code.trim()) return null
+  const Component = getMDXComponent(code)
+  return <Component components={mdxComponents} />
+}

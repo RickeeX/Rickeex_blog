@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from './Link'
-import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
 
 const MobileNav = () => {

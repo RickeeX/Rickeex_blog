@@ -1,12 +1,9 @@
 import 'css/tailwind.css'
 import 'remark-github-blockquote-alert/alert.css'
 
-import { Space_Grotesk } from 'next/font/google'
+import localFont from 'next/font/local'
 import '@fontsource-variable/noto-sans-hk'
-import '@fontsource-variable/noto-sans-sc'
 import '@fontsource-variable/noto-serif-hk'
-import '@fontsource-variable/noto-serif-sc'
-import '@fontsource-variable/hanken-grotesk'
 import Header from '@/components/Header'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
@@ -15,13 +12,12 @@ import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import GridBackground from '@/components/GridBackground'
 import GridBackgroundMinimal from '@/components/GridBackgroundMinimal'
-import SearchProvider from '@/components/SearchProvider'
 import Analytics from '@/components/Analytics'
 
-const space_grotesk = Space_Grotesk({
-  subsets: ['latin'],
+const hankenGrotesk = localFont({
+  src: '../node_modules/@fontsource-variable/hanken-grotesk/files/hanken-grotesk-latin-wght-normal.woff2',
   display: 'swap',
-  variable: '--font-space-grotesk',
+  variable: '--font-hanken-grotesk',
 })
 
 export const metadata: Metadata = {
@@ -36,7 +32,6 @@ export const metadata: Metadata = {
     description: siteMetadata.description,
     url: './',
     siteName: siteMetadata.title,
-    images: [siteMetadata.socialBanner],
     locale: 'en_US',
     type: 'website',
   },
@@ -60,7 +55,6 @@ export const metadata: Metadata = {
   twitter: {
     title: siteMetadata.title,
     card: 'summary_large_image',
-    images: [siteMetadata.socialBanner],
   },
 }
 
@@ -70,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang={siteMetadata.language}
-      className={`${space_grotesk.variable} scroll-smooth`}
+      className={`${hankenGrotesk.variable} scroll-smooth`}
       suppressHydrationWarning
       style={
         {
@@ -110,12 +104,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {siteMetadata.gridBackground === 'minimal' && <GridBackgroundMinimal />}
         <ThemeProviders>
           <Analytics />
-          <SearchProvider>
-            <Header />
-            <SectionContainer>
-              <main className="mb-auto">{children}</main>
-            </SectionContainer>
-          </SearchProvider>
+          <Header basePath={basePath} />
+          <SectionContainer>
+            <main className="mb-auto">{children}</main>
+          </SectionContainer>
           <SectionContainer>
             <Footer />
           </SectionContainer>

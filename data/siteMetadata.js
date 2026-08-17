@@ -8,12 +8,8 @@ const siteMetadata = {
   theme: 'dark', // system, dark or light
   gridBackground: 'minimal', // 'animated' | 'minimal' | 'none'
   siteUrl: 'https://rickeex.com',
-  siteRepo: 'https://github.com/RickeeX/Rickeex_blog',
-  siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
-  socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
   // mastodon: 'https://mastodon.social/@mastodonuser',
   email: 'rickeex@outlook.com',
-  github: 'https://github.com/RickeeX',
   // x: 'https://twitter.com/x',
   // twitter: 'https://twitter.com/Twitter',
   // facebook: 'https://facebook.com',
@@ -24,8 +20,6 @@ const siteMetadata = {
   // medium: 'https://medium.com',
   // bluesky: 'https://bsky.app/',
   locale: 'en-US',
-  // set to true if you want a navbar fixed to the top
-  stickyNav: false,
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.
@@ -49,11 +43,6 @@ const siteMetadata = {
     // googleAnalytics: {
     //   googleAnalyticsId: '', // e.g. G-XXXXXXX
     // },
-  },
-  newsletter: {
-    // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus, beehive
-    // Please add your .env file and modify it according to your selection
-    provider: 'buttondown',
   },
   comments: {
     // If you want to use an analytics provider you have to add it to the
@@ -87,17 +76,6 @@ const siteMetadata = {
   },
   search: {
     provider: 'kbar', // kbar or algolia
-    kbarConfig: {
-      searchDocumentsPath: `${process.env.BASE_PATH || ''}/search.json`, // path to load documents to search
-    },
-    // provider: 'algolia',
-    // algoliaConfig: {
-    //   // The application ID provided by Algolia
-    //   appId: 'R2IYF7ETH7',
-    //   // Public API key: it is safe to commit it
-    //   apiKey: '599cec31baffa4868cae4e79f180729b',
-    //   indexName: 'docsearch',
-    // },
   },
   headingScrollOffset: '100px', // Supports px (e.g., '100px') or % (e.g., '15%')
 }

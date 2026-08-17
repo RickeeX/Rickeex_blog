@@ -1,11 +1,8 @@
-import { slug } from 'github-slugger'
 import siteMetadata from '@/data/siteMetadata'
 import ListLayout from '@/layouts/ListLayoutWithTags'
-import { blogs } from '#site/content'
-import { createTagCount } from '@/lib/content'
 import { genPageMetadata } from 'app/seo'
 import { Metadata } from 'next'
-import { allCoreContent, sortPosts } from '@/lib/content'
+import { getPostsByTag, getTagCounts } from '@/lib/content.server'
 
 export async function generateMetadata(props: {
   params: Promise<{ tag: string }>
@@ -25,7 +22,7 @@ export async function generateMetadata(props: {
 }
 
 export const generateStaticParams = async () => {
-  const tagCounts = createTagCount(blogs)
+  const tagCounts = getTagCounts()
   const tagKeys = Object.keys(tagCounts)
   const paths = tagKeys.map((tag) => ({
     tag: encodeURI(tag),
@@ -38,9 +35,7 @@ export default async function TagPage(props: { params: Promise<{ tag: string }> 
   const tag = decodeURI(params.tag)
   // Capitalize first letter and convert space to dash
   const title = tag[0].toUpperCase() + tag.split(' ').join('-').slice(1)
-  const filteredPosts = allCoreContent(
-    sortPosts(blogs.filter((post) => post.tags && post.tags.map((t) => slug(t)).includes(tag)))
-  )
-  const allTags = createTagCount(blogs)
+  const filteredPosts = getPostsByTag(tag)
+  const allTags = getTagCounts()
   return <ListLayout posts={filteredPosts} title={title} allTags={allTags} />
 }

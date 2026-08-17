@@ -4,10 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-/.yarn/*
-!/.yarn/releases
-!/.yarn/plugins
-!/.yarn/sdks
 
 # testing
 /coverage
@@ -21,6 +17,8 @@ public/sitemap.xml
 # production
 /build
 *.xml
+!app/**/feed.xml/
+!app/**/feed.xml/route.ts
 
 # rss feed
 /public/feed.xml

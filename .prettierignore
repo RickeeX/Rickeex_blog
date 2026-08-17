@@ -1,0 +1,7 @@
+.next
+.velite
+out
+public
+data/blog
+package-lock.json
+next-env.d.ts

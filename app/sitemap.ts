@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { blogs } from '#site/content'
+import { publishedPosts } from '@/lib/content.server'
 import siteMetadata from '@/data/siteMetadata'
 
 export const dynamic = 'force-static'
@@ -7,12 +7,10 @@ export const dynamic = 'force-static'
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = siteMetadata.siteUrl
 
-  const blogRoutes = blogs
-    .filter((post) => !post.draft)
-    .map((post) => ({
-      url: `${siteUrl}/${post.path}`,
-      lastModified: post.lastmod || post.date,
-    }))
+  const blogRoutes = publishedPosts.map((post) => ({
+    url: `${siteUrl}/${post.path}`,
+    lastModified: post.lastmod || post.date,
+  }))
 
   const routes = ['', 'blog', 'projects', 'tags'].map((route) => ({
     url: `${siteUrl}/${route}`,

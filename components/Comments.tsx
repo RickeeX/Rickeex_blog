@@ -7,7 +7,7 @@ import siteMetadata from '@/data/siteMetadata'
 
 type GiscusMapping = 'pathname' | 'url' | 'title' | 'og:title' | 'specific' | 'number'
 
-export default function Comments({ slug }: { slug: string }) {
+export default function Comments() {
   const [loadComments, setLoadComments] = useState(false)
   const { theme, resolvedTheme } = useTheme()
   const commentsTheme =

@@ -1,4 +1,3 @@
-// @ts-check
 const { fontFamily } = require('tailwindcss/defaultTheme')
 const colors = require('tailwindcss/colors')
 
@@ -44,14 +43,7 @@ module.exports = {
         14: '3.5rem',
       },
       fontFamily: {
-        //sans: ['var(--font-space-grotesk)', ...fontFamily.sans],
-        sans: [
-          'Hanken Grotesk Variable',
-          'Noto Sans HK Variable',
-          'Noto Sans SC Variable',
-          //'var(--font-space-grotesk)',
-          ...fontFamily.sans,
-        ],
+        sans: ['var(--font-hanken-grotesk)', 'Noto Sans HK Variable', ...fontFamily.sans],
       },
       colors: {
         primary: colors.pink,

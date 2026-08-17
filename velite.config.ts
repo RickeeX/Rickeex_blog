@@ -41,7 +41,7 @@ const blogs = defineCollection({
       summary: s.string().optional().nullable(),
       images: s.array(s.string()).optional(),
       authors: s.array(s.string()).default(['default']),
-      layout: s.string().default('PostLayout'),
+      layout: s.enum(['PostLayout', 'PostSimple', 'PostBanner']).default('PostLayout'),
       bibliography: s.string().optional(),
       canonicalUrl: s.string().optional(),
       // Velite 内置字段
@@ -49,24 +49,13 @@ const blogs = defineCollection({
       content: s.mdx(),
       raw: s.raw(),
     })
-    .transform((data) => {
+    .transform(({ raw, ...data }) => {
       const slugPath = computeSlug(data.slug)
       return {
         ...data,
         slug: slugPath,
         path: `blog/${slugPath}`,
-        filePath: `data/blog/${slugPath}.mdx`,
-        readingTime: readingTime(data.raw),
-        structuredData: {
-          '@context': 'https://schema.org',
-          '@type': 'BlogPosting',
-          headline: data.title,
-          datePublished: data.date,
-          dateModified: data.lastmod || data.date,
-          description: data.summary,
-          image: data.images?.[0],
-          url: `blog/${slugPath}`,
-        },
+        readingTime: readingTime(raw),
       }
     }),
 })
@@ -90,14 +79,13 @@ const authors = defineCollection({
       content: s.mdx(),
       raw: s.raw(),
     })
-    .transform((data) => {
+    .transform(({ raw, ...data }) => {
+      void raw
       const slugPath = data.slug.replace(/^authors\//, '')
       return {
         ...data,
         slug: slugPath,
         path: `authors/${slugPath}`,
-        filePath: `data/authors/${slugPath}.mdx`,
-        readingTime: readingTime(data.raw),
       }
     }),
 })

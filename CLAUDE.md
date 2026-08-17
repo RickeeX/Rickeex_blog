@@ -10,19 +10,19 @@ This is a personal blog built with Next.js 16, React 19, and Tailwind CSS. It us
 
 ```bash
 # Development - runs Velite in watch mode + Next.js dev server
-yarn dev
+npm run dev
 
 # Production build
-yarn build
+npm run build
 
 # Start production server
-yarn serve
+npx serve out
 
 # Lint and auto-fix
-yarn lint
+npm run lint
 
 # Bundle analysis
-yarn analyze
+npm run analyze
 ```
 
 Note: This project uses Yarn (v3.6.1), not npm.
@@ -46,7 +46,7 @@ Note: This project uses Yarn (v3.6.1), not npm.
 
 ### Configuration
 
-- `data/siteMetadata.js` - Site title, description, analytics (Umami), comments (Giscus), newsletter (Buttondown), search (Kbar)
+- `data/siteMetadata.js` - Site title, description, analytics (Umami), comments (Giscus), and search (Kbar)
 - `next.config.js` - Next.js configuration including security headers and CSP
 
 ### Post Frontmatter

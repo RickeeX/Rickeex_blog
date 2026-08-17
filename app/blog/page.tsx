@@ -1,30 +1,20 @@
 import ListLayout from '@/layouts/ListLayoutWithTags'
-import { allCoreContent, sortPosts, createTagCount } from '@/lib/content'
-import { blogs } from '#site/content'
+import { getPostsPage, getTagCounts, publishedPosts } from '@/lib/content.server'
 import { genPageMetadata } from 'app/seo'
-
-const POSTS_PER_PAGE = 10
 
 export const metadata = genPageMetadata({ title: 'Blog' })
 
 export default async function BlogPage() {
-  const posts = allCoreContent(sortPosts(blogs))
-  const allTags = createTagCount(blogs)
-  const pageNumber = 1
-  const initialDisplayPosts = posts.slice(
-    POSTS_PER_PAGE * (pageNumber - 1),
-    POSTS_PER_PAGE * pageNumber
-  )
-  const pagination = {
-    currentPage: pageNumber,
-    totalPages: Math.ceil(posts.length / POSTS_PER_PAGE),
-  }
+  const page = getPostsPage(1)
+  const allTags = getTagCounts()
+
+  if (!page) return null
 
   return (
     <ListLayout
-      posts={posts}
-      initialDisplayPosts={initialDisplayPosts}
-      pagination={pagination}
+      posts={publishedPosts}
+      initialDisplayPosts={page.items}
+      pagination={page}
       title="All Posts"
       allTags={allTags}
     />

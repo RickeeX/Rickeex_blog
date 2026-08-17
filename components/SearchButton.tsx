@@ -1,18 +1,12 @@
-'use client'
-
-import { useKBar } from 'kbar'
 import siteMetadata from '@/data/siteMetadata'
 
-const SearchButton = () => {
-  const { query } = useKBar()
-
+const SearchButton = ({ onOpen }: { onOpen: () => void }) => {
   if (!siteMetadata.search || siteMetadata.search.provider !== 'kbar') {
     return null
   }
 
   return (
-    <button aria-label="Search" onClick={() => query.toggle()} className="flex items-center">
-      {/* --- 手机端视图：只显示放大镜图标 --- */}
+    <button aria-label="Search" onClick={onOpen} className="flex items-center">
       <div className="md:hidden">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +24,6 @@ const SearchButton = () => {
         </svg>
       </div>
 
-      {/* --- 桌面端视图：显示 Node.js 风格长条框 --- */}
       <div className="group hidden h-9 w-full min-w-[200px] cursor-text items-center overflow-hidden rounded-md border border-gray-200 bg-gray-100 px-3 text-sm text-gray-500 ring-offset-2 hover:border-gray-300 hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:border-gray-700 dark:hover:bg-gray-800 md:flex md:w-64">
         <svg
           xmlns="http://www.w3.org/2000/svg"
