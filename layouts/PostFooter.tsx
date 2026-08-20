@@ -1,21 +1,9 @@
-import Comments from '@/components/Comments'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
-import siteMetadata from '@/data/siteMetadata'
 
 interface PostLink {
   path: string
   title: string
-}
-
-export function PostComments() {
-  if (!siteMetadata.comments?.provider) return null
-
-  return (
-    <div className="pb-6 pt-6 text-center text-gray-700 dark:text-gray-300" id="comment">
-      <Comments />
-    </div>
-  )
 }
 
 export default function PostFooter({

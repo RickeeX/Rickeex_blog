@@ -15,7 +15,7 @@ npm run dev
 # Production build
 npm run build
 
-# Start production server
+# Preview the static export
 npx serve out
 
 # Lint and auto-fix
@@ -25,7 +25,7 @@ npm run lint
 npm run analyze
 ```
 
-Note: This project uses Yarn (v3.6.1), not npm.
+This project uses Node.js 24 and npm. The package lock is the dependency source of truth.
 
 ## Architecture
 
@@ -33,21 +33,22 @@ Note: This project uses Yarn (v3.6.1), not npm.
 
 - Blog posts are written in MDX format in `data/blog/`
 - Velite processes MDX files and generates typed JSON in `.velite/`
-- Content types are defined in `.velite/index.js` and `.velite/index.d.ts`
-- Access content via `lib/content.ts` which imports from `.velite/blogs.json`
+- Content types are generated in `.velite/index.d.ts`
+- Server-side content access is centralized in `lib/content.server.ts`
+- Client-safe types and pure helpers live in `lib/content.ts`
 
 ### Key Directories
 
 - `app/` - Next.js App Router pages (page.tsx, layout.tsx, API routes)
-- `components/` - React components (Header, Footer, Comments, etc.)
+- `components/` - Shared React components
 - `layouts/` - Blog post layouts (PostLayout, PostBanner, PostSimple, ListLayoutWithTags)
 - `lib/` - Utility functions (content.ts for blog data access)
-- `data/` - Site configuration (siteMetadata.js, headerNavLinks.ts, projectsData.ts)
+- `data/` - Site configuration and MDX content
 
 ### Configuration
 
-- `data/siteMetadata.js` - Site title, description, analytics (Umami), comments (Giscus), and search (Kbar)
-- `next.config.js` - Next.js configuration including security headers and CSP
+- `data/siteMetadata.ts` - Site title, description, theme, and search configuration
+- `next.config.js` - Static export, image, SVG, and base-path configuration
 
 ### Post Frontmatter
 

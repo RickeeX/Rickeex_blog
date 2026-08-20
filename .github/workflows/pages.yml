@@ -33,8 +33,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
       - run: npm ci
-      - run: npm run check
-      - run: npm run build
+      - run: npm run generate
+      - run: npm run check:source
+      - run: npm run build:site
         env:
           BASE_PATH: ${{ steps.configure-pages.outputs.base_path }}
       - if: github.event_name != 'pull_request'

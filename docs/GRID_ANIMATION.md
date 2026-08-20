@@ -1,6 +1,6 @@
 # Grid background
 
-The background is selected with `gridBackground` in `data/siteMetadata.js`:
+The background is selected with `gridBackground` in `data/siteMetadata.ts`:
 
 - `minimal` renders a static CSS grid and ambient glow.
 - `animated` renders a CSS-only pulsing grid.

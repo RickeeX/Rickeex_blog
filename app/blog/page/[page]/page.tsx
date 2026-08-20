@@ -22,12 +22,6 @@ export default async function Page(props: { params: Promise<{ page: string }> })
   if (!page || pageNumber === 1) notFound()
 
   return (
-    <ListLayout
-      posts={publishedPosts}
-      initialDisplayPosts={page.items}
-      pagination={page}
-      title="All Posts"
-      allTags={getTagCounts()}
-    />
+    <ListLayout posts={page.items} pagination={page} title="All Posts" allTags={getTagCounts()} />
   )
 }

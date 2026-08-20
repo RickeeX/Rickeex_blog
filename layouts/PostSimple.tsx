@@ -4,8 +4,8 @@ import type { Blog } from '@/lib/content'
 import PageTitle from '@/components/PageTitle'
 import SectionContainer from '@/components/SectionContainer'
 import siteMetadata from '@/data/siteMetadata'
-import ScrollTopAndComment from '@/components/ScrollTopAndComment'
-import PostFooter, { PostComments } from './PostFooter'
+import ScrollTop from '@/components/ScrollTop'
+import PostFooter from './PostFooter'
 
 interface LayoutProps {
   content: CoreContent<Blog>
@@ -20,7 +20,7 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
 
   return (
     <SectionContainer>
-      <ScrollTopAndComment />
+      <ScrollTop />
       <article>
         <div>
           <header>
@@ -42,7 +42,6 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
             <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
               <div className="prose max-w-none pb-8 pt-10 dark:prose-invert">{children}</div>
             </div>
-            <PostComments />
             <footer>
               <PostFooter next={next} prev={prev} backHref={`/${basePath}`} />
             </footer>

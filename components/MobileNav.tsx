@@ -1,37 +1,48 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from './Link'
 import headerNavLinks from '@/data/headerNavLinks'
 
-const MobileNav = () => {
-  const [navShow, setNavShow] = useState(false)
+export default function MobileNav() {
+  const [open, setOpen] = useState(false)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
 
-  const onToggleNav = () => {
-    setNavShow((status) => {
-      if (status) {
-        document.body.style.overflow = 'auto'
-      } else {
-        // Prevent scrolling
-        document.body.style.overflow = 'hidden'
-      }
-      return !status
-    })
-  }
-
-  // 这里的 useEffect 确保在页面跳转后自动关闭菜单
   useEffect(() => {
-    return () => {
-      document.body.style.overflow = 'auto'
+    const dialog = dialogRef.current
+    if (!dialog) return
+
+    if (open && !dialog.open) {
+      dialog.showModal()
+      closeRef.current?.focus()
+    } else if (!open && dialog.open) {
+      dialog.close()
     }
-  }, [])
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [open])
+
+  const closeMenu = () => setOpen(false)
 
   return (
     <>
-      {/* 汉堡按钮：Node.js 风格通常比较方正，这里保持简洁的 SVG */}
       <button
-        aria-label="Toggle Menu"
-        onClick={onToggleNav}
+        ref={triggerRef}
+        type="button"
+        aria-label="Open menu"
+        aria-expanded={open}
+        aria-controls="mobile-navigation"
+        onClick={() => setOpen(true)}
         className="ml-1 mr-1 flex h-8 w-8 items-center justify-center rounded transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 sm:hidden"
       >
         <svg
@@ -39,6 +50,7 @@ const MobileNav = () => {
           viewBox="0 0 20 20"
           fill="currentColor"
           className="h-5 w-5 text-gray-900 dark:text-gray-100"
+          aria-hidden="true"
         >
           <path
             fillRule="evenodd"
@@ -48,24 +60,31 @@ const MobileNav = () => {
         </svg>
       </button>
 
-      {/* 全屏覆盖层：实色背景，无透明度，左对齐列表 */}
-      <div
-        className={`fixed inset-0 z-50 transform bg-white transition-transform duration-300 ease-in-out dark:bg-gray-950 ${
-          navShow ? 'translate-x-0' : 'translate-x-full'
-        }`}
+      <dialog
+        ref={dialogRef}
+        id="mobile-navigation"
+        aria-label="Mobile navigation"
+        onCancel={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false)
+          triggerRef.current?.focus()
+        }}
+        className="m-0 h-dvh max-h-none w-full max-w-none bg-white p-0 text-gray-900 backdrop:bg-black/40 dark:bg-gray-950 dark:text-gray-100 sm:hidden"
       >
-        {/* 顶部栏：包含关闭按钮，位置与 Header 上的汉堡按钮对齐 */}
         <div className="flex justify-end px-4 py-6 sm:px-6">
           <button
-            aria-label="Toggle Menu"
-            onClick={onToggleNav}
-            className="mr-0 flex h-8 w-8 items-center justify-center rounded transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+            ref={closeRef}
+            type="button"
+            aria-label="Close menu"
+            onClick={closeMenu}
+            className="flex h-8 w-8 items-center justify-center rounded transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
-              className="h-5 w-5 text-gray-900 dark:text-gray-100"
+              className="h-5 w-5"
+              aria-hidden="true"
             >
               <path
                 fillRule="evenodd"
@@ -76,8 +95,7 @@ const MobileNav = () => {
           </button>
         </div>
 
-        {/* 菜单列表区域 */}
-        <nav className="fixed mt-8 h-full w-full px-6">
+        <nav className="mt-8 w-full px-6" aria-label="Primary navigation">
           {headerNavLinks.map((link) => (
             <div
               key={link.title}
@@ -85,23 +103,16 @@ const MobileNav = () => {
             >
               <Link
                 href={link.href}
-                className="block text-xl font-medium tracking-wide text-gray-900 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
-                onClick={onToggleNav}
+                className="block text-xl font-medium tracking-wide hover:text-primary-500 dark:hover:text-primary-400"
+                onClick={closeMenu}
               >
                 {link.title}
               </Link>
             </div>
           ))}
-
-          {/* 这里可以放额外的底部链接或社交图标，如果需要的话 */}
-          <div className="mt-8 text-sm text-gray-400">
-            {/* 示例：可以在这里放一个简单的文字Logo或版本号 */}
-            Rickee's Corner
-          </div>
+          <div className="mt-8 text-sm text-gray-400">Rickee's Corner</div>
         </nav>
-      </div>
+      </dialog>
     </>
   )
 }
-
-export default MobileNav

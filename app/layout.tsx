@@ -12,7 +12,6 @@ import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import GridBackground from '@/components/GridBackground'
 import GridBackgroundMinimal from '@/components/GridBackgroundMinimal'
-import Analytics from '@/components/Analytics'
 
 const hankenGrotesk = localFont({
   src: '../node_modules/@fontsource-variable/hanken-grotesk/files/hanken-grotesk-latin-wght-normal.woff2',
@@ -103,7 +102,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {siteMetadata.gridBackground === 'animated' && <GridBackground />}
         {siteMetadata.gridBackground === 'minimal' && <GridBackgroundMinimal />}
         <ThemeProviders>
-          <Analytics />
           <Header basePath={basePath} />
           <SectionContainer>
             <main className="mb-auto">{children}</main>

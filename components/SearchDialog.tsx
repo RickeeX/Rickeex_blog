@@ -49,6 +49,8 @@ function DialogContent({ searchPath }: { searchPath: string }) {
   const router = useRouter()
   const { query } = useKBar()
   const [posts, setPosts] = useState<SearchDocument[]>([])
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [requestVersion, setRequestVersion] = useState(0)
 
   useEffect(() => {
     query.setVisualState(VisualState.showing)
@@ -61,12 +63,18 @@ function DialogContent({ searchPath }: { searchPath: string }) {
         if (!response.ok) throw new Error(`Search index returned ${response.status}`)
         return response.json() as Promise<SearchDocument[]>
       })
-      .then(setPosts)
+      .then((documents) => {
+        setPosts(documents)
+        setLoadError(null)
+      })
       .catch((error: Error) => {
-        if (error.name !== 'AbortError') console.error('Unable to load search index:', error)
+        if (error.name !== 'AbortError') {
+          console.error('Unable to load search index:', error)
+          setLoadError('Unable to load the search index.')
+        }
       })
     return () => controller.abort()
-  }, [searchPath])
+  }, [requestVersion, searchPath])
 
   const actions = useMemo<Action[]>(
     () => [
@@ -126,9 +134,31 @@ function DialogContent({ searchPath }: { searchPath: string }) {
         <KBarAnimator className="w-full max-w-xl overflow-hidden rounded-lg border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-900">
           <KBarSearch
             className="w-full border-b border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-            placeholder={posts.length ? `Search ${posts.length} posts...` : 'Loading posts...'}
+            placeholder={
+              loadError
+                ? 'Search is temporarily unavailable'
+                : posts.length
+                  ? `Search ${posts.length} posts...`
+                  : 'Loading posts...'
+            }
           />
-          <Results />
+          {loadError ? (
+            <div className="flex items-center justify-between gap-4 px-4 py-5" role="alert">
+              <span className="text-sm text-gray-600 dark:text-gray-300">{loadError}</span>
+              <button
+                type="button"
+                className="text-sm font-medium text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                onClick={() => {
+                  setLoadError(null)
+                  setRequestVersion((version) => version + 1)
+                }}
+              >
+                Retry
+              </button>
+            </div>
+          ) : (
+            <Results />
+          )}
         </KBarAnimator>
       </KBarPositioner>
     </KBarPortal>

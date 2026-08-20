@@ -3,13 +3,12 @@ import 'katex/dist/katex.css'
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { authors } from '#site/content'
 import siteMetadata from '@/data/siteMetadata'
 import PostBanner from '@/layouts/PostBanner'
 import PostLayout from '@/layouts/PostLayout'
 import PostSimple from '@/layouts/PostSimple'
-import { coreContent, type Authors, type CoreContent, type PostLayoutName } from '@/lib/content'
-import { getPostBySlug, publishedPosts } from '@/lib/content.server'
+import { coreContent, type PostLayoutName } from '@/lib/content'
+import { getAuthorDetails, getPostBySlug, publishedPosts } from '@/lib/content.server'
 import { MDXLayoutRenderer } from '@/lib/mdx'
 
 const layouts = {
@@ -17,13 +16,6 @@ const layouts = {
   PostSimple,
   PostBanner,
 } satisfies Record<PostLayoutName, typeof PostLayout>
-
-function getAuthorDetails(authorSlugs: string[]): CoreContent<Authors>[] {
-  return authorSlugs.flatMap((authorSlug) => {
-    const author = authors.find(({ slug }) => slug === authorSlug)
-    return author ? [coreContent(author)] : []
-  })
-}
 
 export async function generateMetadata({
   params,

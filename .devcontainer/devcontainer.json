@@ -1,15 +1,15 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
   "hostRequirements": {
     "memory": "8gb"
   },
   "waitFor": "onCreateCommand",
-  "updateContentCommand": "yarn",
+  "updateContentCommand": "npm ci",
   "postCreateCommand": "",
-  "postAttachCommand": "yarn dev",
+  "postAttachCommand": "npm run dev",
   "customizations": {
     "codespaces": {
-      "openFiles": ["data/blog/code-sample.mdx"]
+      "openFiles": ["README.md"]
     },
     "vscode": {
       "settings": {

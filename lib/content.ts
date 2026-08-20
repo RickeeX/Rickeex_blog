@@ -4,6 +4,7 @@ import type { Authors, Blog } from '#site/content'
 export type { Authors, Blog }
 export type PostLayoutName = Blog['layout']
 export type CoreContent<T> = Omit<T, 'content'>
+export type PostListItem = Pick<CoreContent<Blog>, 'path' | 'date' | 'title' | 'summary' | 'tags'>
 
 export interface SearchDocument {
   title: string
@@ -22,6 +23,11 @@ export function coreContent<T extends { content: string }>(content: T): CoreCont
 
 export function allCoreContent<T extends { content: string }>(contents: T[]): CoreContent<T>[] {
   return contents.map(coreContent)
+}
+
+export function postListItem(post: CoreContent<Blog>): PostListItem {
+  const { path, date, title, summary, tags } = post
+  return { path, date, title, summary, tags }
 }
 
 export function sortPosts<T extends { date: string }>(posts: T[]): T[] {

@@ -37,5 +37,5 @@ export default async function TagPage(props: { params: Promise<{ tag: string }> 
   const title = tag[0].toUpperCase() + tag.split(' ').join('-').slice(1)
   const filteredPosts = getPostsByTag(tag)
   const allTags = getTagCounts()
-  return <ListLayout posts={filteredPosts} title={title} allTags={allTags} />
+  return <ListLayout posts={filteredPosts} title={title} allTags={allTags} activeTag={tag} />
 }

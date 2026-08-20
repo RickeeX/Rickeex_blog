@@ -5,8 +5,8 @@ import { CoreContent } from '@/lib/content'
 import type { Blog } from '@/lib/content'
 import PageTitle from '@/components/PageTitle'
 import SectionContainer from '@/components/SectionContainer'
-import ScrollTopAndComment from '@/components/ScrollTopAndComment'
-import PostFooter, { PostComments } from './PostFooter'
+import ScrollTop from '@/components/ScrollTop'
+import PostFooter from './PostFooter'
 
 interface LayoutProps {
   content: CoreContent<Blog>
@@ -22,7 +22,7 @@ export default function PostMinimal({ content, next, prev, children }: LayoutPro
 
   return (
     <SectionContainer>
-      <ScrollTopAndComment />
+      <ScrollTop />
       <article>
         <div>
           <div className="space-y-1 pb-10 text-center dark:border-gray-700">
@@ -38,7 +38,6 @@ export default function PostMinimal({ content, next, prev, children }: LayoutPro
             </div>
           </div>
           <div className="prose max-w-none py-4 dark:prose-invert">{children}</div>
-          <PostComments />
           <footer>
             <PostFooter next={next} prev={prev} backHref="/blog" />
           </footer>

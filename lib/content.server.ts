@@ -1,11 +1,17 @@
+import 'server-only'
+
 import { slug as slugify } from 'github-slugger'
-import { blogs } from '#site/content'
+import { authors, blogs } from '#site/content'
 import {
   allCoreContent,
+  coreContent,
   createTagCount,
+  postListItem,
   sortPosts,
+  type Authors,
   type Blog,
   type CoreContent,
+  type PostListItem,
   type SearchDocument,
 } from './content'
 
@@ -22,8 +28,10 @@ export function getTagCounts(): Record<string, number> {
   return createTagCount(publishedBlogs)
 }
 
-export function getPostsByTag(tag: string): CoreContent<Blog>[] {
-  return publishedPosts.filter((post) => post.tags.some((name) => slugify(name) === tag))
+export function getPostsByTag(tag: string): PostListItem[] {
+  return publishedPosts
+    .filter((post) => post.tags.some((name) => slugify(name) === tag))
+    .map(postListItem)
 }
 
 export function getBlogsByTag(tag: string): Blog[] {
@@ -31,7 +39,7 @@ export function getBlogsByTag(tag: string): Blog[] {
 }
 
 export function getPostsPage(page: number): {
-  items: CoreContent<Blog>[]
+  items: PostListItem[]
   currentPage: number
   totalPages: number
 } | null {
@@ -39,10 +47,24 @@ export function getPostsPage(page: number): {
   if (!Number.isInteger(page) || page < 1 || page > totalPages) return null
 
   return {
-    items: publishedPosts.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE),
+    items: publishedPosts
+      .slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE)
+      .map(postListItem),
     currentPage: page,
     totalPages,
   }
+}
+
+export function getAuthorBySlug(slug: string): Authors | undefined {
+  return authors.find((author) => author.slug === slug)
+}
+
+export function getAuthorDetails(authorSlugs: string[]): CoreContent<Authors>[] {
+  return authorSlugs.map((authorSlug) => {
+    const author = getAuthorBySlug(authorSlug)
+    if (!author) throw new Error(`Unknown author referenced by blog post: ${authorSlug}`)
+    return coreContent(author)
+  })
 }
 
 export function getSearchDocuments(): SearchDocument[] {

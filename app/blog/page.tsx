@@ -1,5 +1,5 @@
 import ListLayout from '@/layouts/ListLayoutWithTags'
-import { getPostsPage, getTagCounts, publishedPosts } from '@/lib/content.server'
+import { getPostsPage, getTagCounts } from '@/lib/content.server'
 import { genPageMetadata } from 'app/seo'
 
 export const metadata = genPageMetadata({ title: 'Blog' })
@@ -10,13 +10,5 @@ export default async function BlogPage() {
 
   if (!page) return null
 
-  return (
-    <ListLayout
-      posts={publishedPosts}
-      initialDisplayPosts={page.items}
-      pagination={page}
-      title="All Posts"
-      allTags={allTags}
-    />
-  )
+  return <ListLayout posts={page.items} pagination={page} title="All Posts" allTags={allTags} />
 }
